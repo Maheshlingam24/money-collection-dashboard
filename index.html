@@ -11,28 +11,36 @@
   <canvas id="collectionChart" width="400" height="200"></canvas>
 
   <script>
-    const ctx = document.getElementById('collectionChart').getContext('2d');
-    const chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-        datasets: [{
-          label: 'Total Collection',
-          data: [350, 0, 0, 0, 0, 0],
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true
+    async function fetchData() {
+      const response = await fetch('data.json'); // Fetch JSON file
+      return response.json();
+    }
+
+    async function renderChart() {
+      const data = await fetchData();
+
+      const ctx = document.getElementById('collectionChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(data.totals), // Months
+          datasets: [{
+            label: 'Total Collection',
+            data: Object.values(data.totals), // Totals
+            backgroundColor: ['#4caf50', '#ff9800', '#2196f3', '#f44336'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true }
           }
         }
-      }
-    });
+      });
+    }
+
+    renderChart();
   </script>
 </body>
 </html>
